@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{image_science}
+  s.name = %q{brightcove_image_science}
   s.version = "1.2.2"
 
   s.required_rubygems_version = nil if s.respond_to? :required_rubygems_version=
