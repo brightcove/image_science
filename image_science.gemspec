@@ -11,7 +11,6 @@ Gem::Specification.new do |s|
   s.email = %q{ryand-ruby@zenspider.com}
   s.extra_rdoc_files = ["History.txt", "Manifest.txt", "README.txt"]
   s.files = ["History.txt", "Manifest.txt", "README.txt", "Rakefile", "bench.rb", "lib/image_science.rb", "bin/image_science_thumb", "test/pix.png", "test/test_image_science.rb"]
-  s.has_rdoc = true
   s.homepage = %q{http://seattlerb.rubyforge.org/ImageScience.html}
   s.rdoc_options = ["--main", "README.txt"]
   s.require_paths = ["lib"]
