@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.version = "1.1.3.1"
 
   s.required_rubygems_version = nil if s.respond_to? :required_rubygems_version=
-  s.authors = ["Josh Rossmeisl"]
+  s.authors = ["Ryan Davis"]
   s.date = %q{2007-05-30}
   s.description = %q{ImageScience is a clean and happy Ruby library that generates thumbnails -- and kicks the living crap out of RMagick. Oh, and it doesn't leak memory like a sieve. :) For more information including build steps, see http://seattlerb.rubyforge.org/}
   s.email = %q{ryand-ruby@zenspider.com}
