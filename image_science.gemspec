@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--main", "README.txt"]
   s.require_paths = ["lib"]
   s.required_ruby_version = Gem::Requirement.new("> 0.0.0")
-  s.rubyforge_project = %q{seattlerb}
   s.rubygems_version = %q{1.3.1}
   s.summary = %q{ImageScience is a clean and happy Ruby library that generates thumbnails -- and kicks the living crap out of RMagick.}
   s.test_files = ["test/test_image_science.rb"]
