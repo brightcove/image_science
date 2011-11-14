@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = %q{ImageScience is a clean and happy Ruby library that generates thumbnails -- and kicks the living crap out of RMagick. Oh, and it doesn't leak memory like a sieve. :) For more information including build steps, see http://seattlerb.rubyforge.org/}
   s.email = %q{ryand-ruby@zenspider.com}
   s.extra_rdoc_files = ["History.txt", "Manifest.txt", "README.txt"]
-  s.files = ["History.txt", "Manifest.txt", "README.txt", "Rakefile", "bench.rb", "lib/image_science.rb", "quick_thumb", "test/pix.png", "test/test_image_science.rb"]
+  s.files = ["History.txt", "Manifest.txt", "README.txt", "Rakefile", "bench.rb", "lib/image_science.rb", "bin/image_science_thumb", "test/pix.png", "test/test_image_science.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://seattlerb.rubyforge.org/ImageScience.html}
   s.rdoc_options = ["--main", "README.txt"]
