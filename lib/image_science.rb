@@ -47,6 +47,12 @@ class ImageScience
   # convert the file type to the appropriate format.
 
   def save(path); end
+  
+  ##
+  # Saves the image to +path+, compression ratio +ratio+ in [0..100]
+  # if the output type is jpeg
+  
+  def save_with_compression_ratio(path, ratio); end
 
   ##
   # Resizes the image to +width+ and +height+ using a cubic-bspline
@@ -276,6 +282,32 @@ class ImageScience
         if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsWriting(fif)) {
           GET_BITMAP(bitmap);
           flags = fif == FIF_JPEG ? JPEG_QUALITYGOOD : 0;
+          BOOL result = 0, unload = 0;
+
+          if (fif == FIF_PNG) FreeImage_DestroyICCProfile(bitmap);
+          if (fif == FIF_JPEG && FreeImage_GetBPP(bitmap) != 24)
+            bitmap = FreeImage_ConvertTo24Bits(bitmap), unload = 1; // sue me
+
+          result = FreeImage_Save(fif, bitmap, output, flags);
+
+          if (unload) FreeImage_Unload(bitmap);
+
+          return result ? Qtrue : Qfalse;
+        }
+        rb_raise(rb_eTypeError, "Unknown file format");
+      }
+    END
+    
+    builder.c <<-"END"
+      VALUE save_with_compression_ratio(char * output, int ratio) {
+        if (ratio < 0 || ratio > 100) { ratio = 50; }
+        int flags;
+        FIBITMAP *bitmap;
+        FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(output);
+        if (fif == FIF_UNKNOWN) fif = FIX2INT(rb_iv_get(self, "@file_type"));
+        if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsWriting(fif)) {
+          GET_BITMAP(bitmap);
+          flags = fif == FIF_JPEG ? ratio : 0;
           BOOL result = 0, unload = 0;
 
           if (fif == FIF_PNG) FreeImage_DestroyICCProfile(bitmap);
