@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{image_science}
-  s.version = "1.2.2"
+  s.version = "1.2.2.1"
 
   s.required_rubygems_version = nil if s.respond_to? :required_rubygems_version=
   s.authors = ["Ryan Davis"]
