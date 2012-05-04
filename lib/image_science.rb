@@ -305,10 +305,11 @@ class ImageScience
     
     builder.c <<-"END"
       VALUE save_with_compression_ratio(char * output, int ratio) {
-        if (ratio < 1 || ratio > 100) { ratio = 70; }
         int flags;
         FIBITMAP *bitmap;
         FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(output);
+
+        if (ratio < 1 || ratio > 100) { ratio = 70; }
         if (fif == FIF_UNKNOWN) fif = FIX2INT(rb_iv_get(self, "@file_type"));
         if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsWriting(fif)) {
           BOOL result = 0, unload = 0;
