@@ -1,3 +1,14 @@
+=== 1.2.2 / 2012-03-13
+
+* 1 minor enhancement:
+
+  * Extended build to look for homebrew setup (hcatlin)
+
+* 2 bug fixes:
+
+  * Fixed 1.9 warnings, clang warnings, etc...
+  * Fixed compilation error when ruby's config mandates C89 style decls. (nocode)
+
 === 1.2.1 / 2009-08-14
 
 * 2 minor enhancements:
@@ -9,7 +20,7 @@
 
 * 7 minor enhancements:
 
-  *	Moved quick_thumb to bin/image_science_thumb and properly added.
+  * Moved quick_thumb to bin/image_science_thumb and properly added.
   * Added -s (square) flag to bin/image_science_thumb
   * Added autorotating on image load. (choonkeat)
   * Added ruby_inline to clean globs

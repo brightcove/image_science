@@ -15,36 +15,36 @@ class ImageScience
 
   ##
   # The top-level image loader opens +path+ and then yields the image.
-
-  def self.with_image(path) # :yields: image
-  end
+  #
+  # :singleton-method: with_image
 
   ##
-  # The top-level image loader, opens an image from the string +data+ and then yields the image.
-
-  def self.with_image_from_memory(data) # :yields: image
-  end
+  # The top-level image loader, opens an image from the string +data+
+  # and then yields the image.
+  #
+  # :singleton-method: with_image_from_memory
 
   ##
   # Crops an image to +left+, +top+, +right+, and +bottom+ and then
   # yields the new image.
-
-  def with_crop(left, top, right, bottom) # :yields: image
-  end
+  #
+  # :method: with_crop
 
   ##
   # Returns the width of the image, in pixels.
-
-  def width; end
+  #
+  # :method: width
 
   ##
   # Returns the height of the image, in pixels.
-
-  def height; end
+  #
+  # :method: height
 
   ##
   # Saves the image out to +path+. Changing the file extension will
   # convert the file type to the appropriate format.
+  #
+  # :method: save
 
   def save(path); end
   
@@ -57,9 +57,8 @@ class ImageScience
   ##
   # Resizes the image to +width+ and +height+ using a cubic-bspline
   # filter and yields the new image.
-
-  def resize(width, height) # :yields: image
-  end
+  #
+  # :method: resize
 
   ##
   # Creates a proportional thumbnail of the image scaled so its longest
@@ -171,7 +170,7 @@ class ImageScience
           FIBITMAP *bitmap;
           VALUE result = Qnil;
           flags = fif == FIF_JPEG ? JPEG_ACCURATE : 0;
-          if (bitmap = FreeImage_Load(fif, input, flags)) {
+          if ((bitmap = FreeImage_Load(fif, input, flags))) {
             FITAG *tagValue = NULL;
             FreeImage_GetMetadata(FIMD_EXIF_MAIN, bitmap, "Orientation", &tagValue); 
             switch (tagValue == NULL ? 0 : *((short *) FreeImage_GetTagValue(tagValue))) {
@@ -193,17 +192,24 @@ class ImageScience
           return result;
         }
         rb_raise(rb_eTypeError, "Unknown file format");
+        return Qnil;
       }
     END
 
     builder.c_singleton <<-"END"
       VALUE with_image_from_memory(VALUE image_data) {
         FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
+        BYTE *image_data_ptr;
+        DWORD image_data_length;
+        FIMEMORY *stream;
+        FIBITMAP *bitmap = NULL;
+        VALUE result = Qnil;
+        int flags;
 
         Check_Type(image_data, T_STRING);
-        BYTE *image_data_ptr    = (BYTE*)RSTRING_PTR(image_data);
-        DWORD image_data_length = RSTRING_LEN(image_data);
-        FIMEMORY *stream = FreeImage_OpenMemory(image_data_ptr, image_data_length);
+        image_data_ptr    = (BYTE*)RSTRING_PTR(image_data);
+        image_data_length = (DWORD)RSTRING_LEN(image_data);
+        stream = FreeImage_OpenMemory(image_data_ptr, image_data_length);
 
         if (NULL == stream) {
           rb_raise(rb_eTypeError, "Unable to open image_data");
@@ -214,9 +220,7 @@ class ImageScience
           rb_raise(rb_eTypeError, "Unknown file format");
         }
 
-        FIBITMAP *bitmap = NULL;
-        VALUE result = Qnil;
-        int flags = fif == FIF_JPEG ? JPEG_ACCURATE : 0;
+        flags = fif == FIF_JPEG ? JPEG_ACCURATE : 0;
         bitmap = FreeImage_LoadFromMemory(fif, stream, flags);
         FreeImage_CloseMemory(stream);
         if (bitmap) {
@@ -232,7 +236,7 @@ class ImageScience
         VALUE result = Qnil;
         GET_BITMAP(bitmap);
 
-        if (copy = FreeImage_Copy(bitmap, l, t, r, b)) {
+        if ((copy = FreeImage_Copy(bitmap, l, t, r, b))) {
           copy_icc_profile(self, bitmap, copy);
           result = wrap_and_yield(copy, self, 0);
         }
@@ -259,7 +263,7 @@ class ImageScience
     END
 
     builder.c <<-"END"
-      VALUE resize(long w, long h) {
+      VALUE resize(int w, int h) {
         FIBITMAP *bitmap, *image;
         if (w <= 0) rb_raise(rb_eArgError, "Width <= 0");
         if (h <= 0) rb_raise(rb_eArgError, "Height <= 0");
@@ -280,9 +284,9 @@ class ImageScience
         FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(output);
         if (fif == FIF_UNKNOWN) fif = FIX2INT(rb_iv_get(self, "@file_type"));
         if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsWriting(fif)) {
+          BOOL result = 0, unload = 0;
           GET_BITMAP(bitmap);
           flags = fif == FIF_JPEG ? JPEG_QUALITYGOOD : 0;
-          BOOL result = 0, unload = 0;
 
           if (fif == FIF_PNG) FreeImage_DestroyICCProfile(bitmap);
           if (fif == FIF_JPEG && FreeImage_GetBPP(bitmap) != 24)
@@ -295,6 +299,7 @@ class ImageScience
           return result ? Qtrue : Qfalse;
         }
         rb_raise(rb_eTypeError, "Unknown file format");
+        return Qnil;
       }
     END
     
@@ -306,9 +311,9 @@ class ImageScience
         FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(output);
         if (fif == FIF_UNKNOWN) fif = FIX2INT(rb_iv_get(self, "@file_type"));
         if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsWriting(fif)) {
+          BOOL result = 0, unload = 0;
           GET_BITMAP(bitmap);
           flags = fif == FIF_JPEG ? ratio : 0;
-          BOOL result = 0, unload = 0;
 
           if (fif == FIF_PNG) FreeImage_DestroyICCProfile(bitmap);
           if (fif == FIF_JPEG && FreeImage_GetBPP(bitmap) != 24)
@@ -321,6 +326,7 @@ class ImageScience
           return result ? Qtrue : Qfalse;
         }
         rb_raise(rb_eTypeError, "Unknown file format");
+        return Qnil;
       }
     END
   end
